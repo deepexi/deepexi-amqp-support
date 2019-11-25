@@ -1,4 +1,4 @@
-package com.deepexi.support.amqp.event.spring.asset.inner;
+package com.deepexi.support.amqp.event.asset.inner;
 
 import com.deepexi.support.amqp.event.EventMessage;
 

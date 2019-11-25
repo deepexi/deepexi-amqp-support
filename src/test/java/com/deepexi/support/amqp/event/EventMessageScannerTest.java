@@ -1,11 +1,10 @@
-package com.deepexi.support.amqp.event.spring;
+package com.deepexi.support.amqp.event;
 
-import com.deepexi.support.amqp.event.EventMessageScanner;
-import com.deepexi.support.amqp.event.spring.asset.Foo1;
-import com.deepexi.support.amqp.event.spring.asset.Foo2;
-import com.deepexi.support.amqp.event.spring.asset.sub.Foo3;
-import com.deepexi.support.amqp.event.spring.asset.exclude.Bar1;
-import com.deepexi.support.amqp.event.spring.asset.inner.Inner;
+import com.deepexi.support.amqp.event.asset.Foo1;
+import com.deepexi.support.amqp.event.asset.Foo2;
+import com.deepexi.support.amqp.event.asset.sub.Foo3;
+import com.deepexi.support.amqp.event.asset.exclude.Bar1;
+import com.deepexi.support.amqp.event.asset.inner.Inner;
 import org.junit.Test;
 
 import java.util.Set;
