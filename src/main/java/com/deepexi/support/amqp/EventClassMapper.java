@@ -18,7 +18,7 @@ public class EventClassMapper implements ClassMapper {
     public static final String EVENT_CODE_HEADER = "_EVENT_CODE_";
 
     private ClassMapper delegate;
-    private String eventCodeHeader;
+    String eventCodeHeader;
     private EventMessageTypeMapping mapping;
 
     public EventClassMapper(String eventCodeHeader, EventMessageTypeMapping mapping) {
@@ -41,7 +41,10 @@ public class EventClassMapper implements ClassMapper {
     public void fromClass(Class<?> clazz, MessageProperties messageProperties) {
         String event = EventMessageUtils.getEventCode(clazz);
         if (StringUtils.isEmpty(event)) {
-            log.debug("class {} is not an event message. fallback to delegate {}.", clazz, this.delegate);
+            if (delegate == null) {
+                throw new UnsupportedOperationException(String.format("Should add annotation %s to class %s or specify delegate ClassMapper.", EventMessage.class, clazz));
+            }
+            log.debug("Class {} is not an event message. fallback to delegate {}.", clazz, this.delegate);
             this.delegate.fromClass(clazz, messageProperties);
         } else {
             messageProperties.getHeaders().put(this.eventCodeHeader, event);
