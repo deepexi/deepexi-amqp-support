@@ -1,4 +1,4 @@
-package com.deepexi.support.amqp;
+package com.deepexi.support.amqp.event;
 
 import org.junit.Before;
 import org.junit.Test;

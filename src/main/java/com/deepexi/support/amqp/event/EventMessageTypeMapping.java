@@ -1,7 +1,7 @@
-package com.deepexi.support.amqp;
+package com.deepexi.support.amqp.event;
 
-import com.deepexi.support.amqp.exception.EventMessageException;
-import com.deepexi.support.amqp.util.EventMessageUtils;
+import com.deepexi.support.amqp.event.exception.EventMessageException;
+import com.deepexi.support.amqp.event.util.EventMessageUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;

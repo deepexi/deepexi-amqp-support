@@ -1,6 +1,6 @@
-package com.deepexi.support.amqp.util;
+package com.deepexi.support.amqp.event.util;
 
-import com.deepexi.support.amqp.EventMessage;
+import com.deepexi.support.amqp.event.EventMessage;
 import org.springframework.core.annotation.AnnotationUtils;
 
 import java.util.function.Function;

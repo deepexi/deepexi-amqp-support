@@ -1,4 +1,4 @@
-package com.deepexi.support.amqp.exception;
+package com.deepexi.support.amqp.event.exception;
 
 /**
  * @author taccisum - liaojinfeng@deepexi.com

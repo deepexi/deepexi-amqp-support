@@ -1,4 +1,4 @@
-package com.deepexi.support.amqp.spring.asset.exclude;
+package com.deepexi.support.amqp.event.spring.asset.exclude;
 
 /**
  * @author taccisum - liaojinfeng@deepexi.com
