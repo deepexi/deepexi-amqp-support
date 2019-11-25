@@ -1,5 +1,19 @@
 # DeepEXI AMQP Support
 
+    $ mvn install
+    
+
+add dependency
+
+```xml
+<!-- pom.xml -->
+<dependency>
+    <groupId>com.deepexi</groupId>
+    <artifactId>deepexi-amqp-support</artifactId>
+    <version>{version}</version>
+</dependency>
+```
+
 ## EventMessageClassMapper
 
 ```java
