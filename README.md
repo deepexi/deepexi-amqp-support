@@ -1,5 +1,7 @@
 # DeepEXI AMQP Support
 
+enhancements for spring boot amqp.
+
     $ mvn install
     
 
