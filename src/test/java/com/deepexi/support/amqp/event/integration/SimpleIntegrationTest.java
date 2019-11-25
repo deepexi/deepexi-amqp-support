@@ -1,6 +1,7 @@
 package com.deepexi.support.amqp.event.integration;
 
 import com.deepexi.support.amqp.event.integration.event.FooEvent;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.amqp.core.Binding;
@@ -24,6 +25,7 @@ import org.springframework.test.context.junit4.SpringRunner;
  * @author taccisum - liaojinfeng@deepexi.com
  * @since 2019-11-25
  */
+@Ignore
 @RunWith(SpringRunner.class)
 @Import(SimpleIntegrationTest.Configuration.class)
 @SpringBootTest(classes = App.class)
