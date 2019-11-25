@@ -18,8 +18,12 @@ public abstract class EventMessageUtils {
         return computeIfAnnotationPresent(clazz, EventMessage::exchange);
     }
 
+    public static EventMessage findAnnotation(Class<?> clazz) {
+        return AnnotationUtils.findAnnotation(clazz, EventMessage.class);
+    }
+
     private static <R> R computeIfAnnotationPresent(Class<?> clazz, Function<EventMessage, R> func) {
-        EventMessage annotation = AnnotationUtils.findAnnotation(clazz, EventMessage.class);
+        EventMessage annotation = findAnnotation(clazz);
         if (annotation == null) {
             return null;
         }
