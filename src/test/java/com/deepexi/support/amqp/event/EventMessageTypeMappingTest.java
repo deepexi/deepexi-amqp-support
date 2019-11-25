@@ -1,5 +1,6 @@
 package com.deepexi.support.amqp.event;
 
+import com.deepexi.support.amqp.event.exception.EventMessageException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -20,6 +21,12 @@ public class EventMessageTypeMappingTest {
         assertThat(mapping.code2clazzMapping.get("ex")).isNotNull();
         assertThat(mapping.code2clazzMapping.get("ex").get("E1")).isEqualTo(String.class);
         assertThat(mapping.code2clazzMapping.get("ex").get("E2")).isEqualTo(Integer.class);
+    }
+
+    @Test(expected = EventMessageException.class)
+    public void addRepeatedMapping() {
+        mapping.addMapping("ex", "REPEATED_EVENT", Integer.class);
+        mapping.addMapping("ex", "REPEATED_EVENT", Integer.class);
     }
 
     @Test
