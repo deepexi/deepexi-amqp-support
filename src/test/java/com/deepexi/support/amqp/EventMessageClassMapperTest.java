@@ -8,22 +8,22 @@ import org.springframework.amqp.support.converter.ClassMapper;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
-public class EventClassMapperTest {
+public class EventMessageClassMapperTest {
     private EventMessageTypeMapping mapping;
-    private EventClassMapper mapper;
+    private EventMessageClassMapper mapper;
     private ClassMapper delegate;
 
     @Before
     public void setUp() throws Exception {
         mapping = mock(EventMessageTypeMapping.class);
         delegate = mock(ClassMapper.class);
-        mapper = new EventClassMapper(mapping);
+        mapper = new EventMessageClassMapper(mapping);
         mapper.setDelegateMapper(delegate);
     }
 
     @Test
     public void defaultEventCode() {
-        assertThat(mapper.eventCodeHeader).isEqualTo(EventClassMapper.EVENT_CODE_HEADER);
+        assertThat(mapper.eventCodeHeader).isEqualTo(EventMessageClassMapper.EVENT_CODE_HEADER);
     }
 
     @Test

@@ -14,14 +14,14 @@ import java.util.Objects;
  * @since 2019-11-25
  */
 @Slf4j
-public class EventClassMapper implements ClassMapper {
+public class EventMessageClassMapper implements ClassMapper {
     public static final String EVENT_CODE_HEADER = "_EVENT_CODE_";
 
     private ClassMapper delegate;
     String eventCodeHeader;
     private EventMessageTypeMapping mapping;
 
-    public EventClassMapper(String eventCodeHeader, EventMessageTypeMapping mapping) {
+    public EventMessageClassMapper(String eventCodeHeader, EventMessageTypeMapping mapping) {
         Objects.requireNonNull(eventCodeHeader, "eventCodeHeader");
         Objects.requireNonNull(mapping, "mapping");
         this.eventCodeHeader = eventCodeHeader;
@@ -29,7 +29,7 @@ public class EventClassMapper implements ClassMapper {
         this.delegate = new DefaultJackson2JavaTypeMapper();
     }
 
-    public EventClassMapper(EventMessageTypeMapping mapping) {
+    public EventMessageClassMapper(EventMessageTypeMapping mapping) {
         this(EVENT_CODE_HEADER, mapping);
     }
 
