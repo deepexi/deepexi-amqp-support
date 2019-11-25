@@ -8,7 +8,7 @@ import java.util.Map;
  * @since 2019-11-25
  */
 public class EventMessageTypeMapping {
-    private Map<String, Map<String, Class<?>>> code2clazzMapping;
+    Map<String, Map<String, Class<?>>> code2clazzMapping;
 
     public EventMessageTypeMapping() {
         code2clazzMapping = new HashMap<>();
