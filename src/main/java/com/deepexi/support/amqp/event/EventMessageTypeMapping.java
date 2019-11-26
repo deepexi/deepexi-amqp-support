@@ -4,10 +4,7 @@ import com.deepexi.support.amqp.event.exception.EventMessageException;
 import com.deepexi.support.amqp.event.util.EventMessageUtils;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author taccisum - liaojinfeng@deepexi.com
@@ -40,13 +37,21 @@ public class EventMessageTypeMapping {
         }
     }
 
+    /**
+     * TODO:: unit test
+     */
     @Slf4j
     public static class Builder {
-        private String pkg;
+        private List<String> pkgs = new ArrayList<>();
         private boolean strict = true;
 
         public Builder pkg(String pkg) {
-            this.pkg = pkg;
+            this.pkgs.add(pkg);
+            return this;
+        }
+
+        public Builder pkgs(String... pkgs) {
+            this.pkgs.addAll(Arrays.asList(pkgs));
             return this;
         }
 
@@ -56,11 +61,13 @@ public class EventMessageTypeMapping {
         }
 
         public EventMessageTypeMapping build() {
-            Objects.requireNonNull(pkg, "should call pkg() first.");
-
             EventMessageTypeMapping mapping = new EventMessageTypeMapping();
 
-            Set<Class<?>> classes = new EventMessageScanner(pkg).scan();
+            Set<Class<?>> classes = new HashSet<>();
+            for (String pkg : pkgs) {
+                classes.addAll(new EventMessageScanner(pkg).scan());
+            }
+
             for (Class<?> clazz : classes) {
                 EventMessage annotation = EventMessageUtils.findAnnotation(clazz);
                 if (annotation == null) {
