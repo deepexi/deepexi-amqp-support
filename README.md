@@ -1,5 +1,9 @@
 # DeepEXI AMQP Support
 
+[![Build Status](https://travis-ci.com/deepexi/deepexi-amqp-support.svg?branch=master)](https://travis-ci.com/deepexi/deepexi-amqp-support)
+[![codecov](https://codecov.io/gh/deepexi/deepexi-amqp-support/branch/master/graph/badge.svg)](https://codecov.io/gh/deepexi/deepexi-amqp-support)
+
+
 enhancements for spring boot amqp.
 
     $ mvn install
