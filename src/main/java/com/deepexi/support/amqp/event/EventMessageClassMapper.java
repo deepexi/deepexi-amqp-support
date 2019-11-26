@@ -1,5 +1,6 @@
 package com.deepexi.support.amqp.event;
 
+import com.deepexi.support.amqp.event.exception.EventMessageException;
 import com.deepexi.support.amqp.event.util.EventMessageUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.MessageProperties;
@@ -59,7 +60,11 @@ public class EventMessageClassMapper implements ClassMapper {
             log.debug("event code not found. fallback to delegate {}.", this.delegate);
             return this.delegate.toClass(messageProperties);
         } else {
-            return this.mapping.getMapping(exchange, event);
+            Class<?> clazz = this.mapping.getMapping(exchange, event);
+            if (clazz == null) {
+                throw new EventMessageException(String.format("class that mapping to %s of exchange %s is not exists.", event, exchange));
+            }
+            return clazz;
         }
     }
 }
