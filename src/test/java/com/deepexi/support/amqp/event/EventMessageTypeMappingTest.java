@@ -4,6 +4,8 @@ import com.deepexi.support.amqp.event.exception.EventMessageException;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Map;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class EventMessageTypeMappingTest {
@@ -33,5 +35,11 @@ public class EventMessageTypeMappingTest {
     public void getMapping() {
         assertThat(mapping.getMapping("ex", "E1")).isEqualTo(String.class);
         assertThat(mapping.getMapping("ex", "E2")).isEqualTo(Integer.class);
+    }
+
+    @Test
+    public void getMappingOnNull() {
+        mapping.setDefaultMappingClass(Map.class);
+        assertThat(mapping.getMapping("none", "none")).isEqualTo(Map.class);
     }
 }

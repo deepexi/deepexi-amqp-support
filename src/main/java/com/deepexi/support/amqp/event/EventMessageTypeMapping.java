@@ -12,9 +12,14 @@ import java.util.*;
  */
 public class EventMessageTypeMapping {
     Map<String, Map<String, Class<?>>> code2clazzMapping;
+    private Class<?> defaultMappingClass;
 
     public EventMessageTypeMapping() {
         code2clazzMapping = new HashMap<>();
+    }
+
+    public void setDefaultMappingClass(Class<?> defaultMappingClass) {
+        this.defaultMappingClass = defaultMappingClass;
     }
 
     /**
@@ -30,11 +35,15 @@ public class EventMessageTypeMapping {
 
     public Class<?> getMapping(String exchange, String event) {
         Map<String, Class<?>> map = code2clazzMapping.get(exchange);
-        if (map == null) {
-            return null;
-        } else {
-            return map.get(event);
+        Class<?> clazz = null;
+        if (map != null) {
+            clazz = map.get(event);
         }
+        return clazz != null ? clazz : def();
+    }
+
+    private Class<?> def() {
+        return defaultMappingClass;
     }
 
     /**
@@ -44,6 +53,12 @@ public class EventMessageTypeMapping {
     public static class Builder {
         private List<String> pkgs = new ArrayList<>();
         private boolean strict = true;
+        private Class<?> def;
+
+        public Builder def(Class<?> def) {
+            this.def = def;
+            return this;
+        }
 
         public Builder pkg(String pkg) {
             this.pkgs.add(pkg);
@@ -62,6 +77,10 @@ public class EventMessageTypeMapping {
 
         public EventMessageTypeMapping build() {
             EventMessageTypeMapping mapping = new EventMessageTypeMapping();
+
+            if (this.def != null) {
+                mapping.setDefaultMappingClass(def);
+            }
 
             Set<Class<?>> classes = new HashSet<>();
             for (String pkg : pkgs) {
