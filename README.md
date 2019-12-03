@@ -1,5 +1,7 @@
 # DeepEXI AMQP Support
 
+[CHANGELOG](./CHANGELOG.md)
+
 [![Build Status](https://travis-ci.com/deepexi/deepexi-amqp-support.svg?branch=master)](https://travis-ci.com/deepexi/deepexi-amqp-support)
 [![codecov](https://codecov.io/gh/deepexi/deepexi-amqp-support/branch/master/graph/badge.svg)](https://codecov.io/gh/deepexi/deepexi-amqp-support)
 
