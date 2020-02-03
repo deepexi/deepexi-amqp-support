@@ -1,9 +1,7 @@
 package com.deepexi.support.amqp.listener.handler;
 
-import com.deepexi.support.amqp.listener.model.Message;
-import com.deepexi.support.amqp.listener.MessageCallbackHandler;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
+import com.deepexi.support.amqp.listener.MessageHelper;
+import com.deepexi.support.amqp.listener.Message;
 import org.springframework.amqp.rabbit.listener.RabbitListenerErrorHandler;
 import org.springframework.amqp.rabbit.listener.exception.ListenerExecutionFailedException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,22 +13,18 @@ import org.springframework.stereotype.Component;
  * <p></p>
  */
 @Component
-public class RabbitErrorHandler implements RabbitListenerErrorHandler {
+public final class RabbitErrorHandler implements RabbitListenerErrorHandler {
 
     @Autowired
-    private MessageCallbackHandler callbackHandler;
+    private MessageHandler messageHandler;
+
+    @Autowired
+    private MessageHelper messageHelper;
 
     @Override
     public Object handleError(org.springframework.amqp.core.Message amqpMessage, org.springframework.messaging.Message<?> message, ListenerExecutionFailedException exception) {
-        Message data = new Message();
+        Message data = messageHelper.messageBuilder(message.getHeaders(), message.getPayload());
         data.setMessageId(amqpMessage.getMessageProperties().getMessageId());
-        Object result = callbackHandler.handleAsFailure(exception, data);
-
-        Subject subject = SecurityUtils.getSubject();
-        if (subject.isAuthenticated()) {
-            subject.logout();
-        }
-
-        return result;
+        return messageHandler.listenAsFailure(data);
     }
 }

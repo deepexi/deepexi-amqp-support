@@ -1,15 +1,10 @@
 package com.deepexi.support.amqp.listener;
 
-import com.deepexi.support.amqp.listener.model.MQListenerProperties;
-import com.deepexi.support.amqp.listener.model.Message;
-import com.github.taccisum.shiro.web.autoconfigure.stateless.support.StatelessToken;
+import com.deepexi.support.amqp.listener.handler.MessageHandler;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.Headers;
-import org.springframework.util.StringUtils;
 
 import java.util.Map;
 
@@ -21,73 +16,37 @@ import java.util.Map;
 @Slf4j
 public abstract class AbstractListener {
     @Autowired
-    private MQListenerProperties properties;
-
+    private MessageHandler messageHandler;
     @Autowired
-    private MessageCallbackHandler callbackHandler;
+    private MessageHelper messageHelper;
 
     @RabbitHandler(isDefault = true)
-    public void listen(Object message, @Headers Map headers) {
-        log.warn("handler not found. message[content: {}, headers: {}] will be ignored.", message, headers);
+    public final void listen(Object message, @Headers Map headers) {
+        String messageId = messageHelper.getMessageId(headers);
+        if (messageHelper.isConsumed(messageId)) {
+            log.warn("message[message id: {}] has been consumed. it will be ignored.", messageId);
+            return;
+        }
+
+        messageHandler.defaultListenerHandle(messageHelper.messageBuilder(headers, message));
     }
 
-    protected void withAuthAndRecord(Object data, Map headers, Action action) {
-        String messageId = headers.get(AmqpHeaders.MESSAGE_ID).toString();
-        if (StringUtils.isEmpty(messageId)) {
-            throw new IllegalArgumentException("message id could not be null.");
+    public final void consume(Map headers, Object data, Action action) {
+        String messageId = messageHelper.getMessageId(headers);
+        if (messageHelper.isConsumed(messageId)) {
+            log.warn("message[message id: {}] has been consumed. it will be ignored.", messageId);
+            return;
         }
 
-        String token = headers.get(AmqpHeaders.TOKEN).toString();
-        if (StringUtils.isEmpty(token)) {
-            throw new IllegalArgumentException("token could not be null.");
-        }
-
-        withAuthAndRecord(data, messageId, token, action);
-    }
-
-    protected void withAuthAndRecord(Object data, String messageId, String token, Action action) {
-        if (StringUtils.isEmpty(messageId)) {
-            throw new IllegalArgumentException("message id could not be null.");
-        }
-
-        Message message = new Message()
-                .setMessageId(messageId)
-                .setToken(token)
-                .setData(data);
-
+        Message message = messageHelper.messageBuilder(headers, data);
         try {
-            login(token);
+            messageHandler.preHandle(message);
+            action.exec();
+            messageHandler.postHandle(message);
 
-            action.consume();
-            callbackHandler.handle(true, message);
-
-            logout();
+            messageHandler.consumeAsSuccess(message);
         } catch (Exception e) {
-            callbackHandler.handleAsFailure(e, message);
-        }
-    }
-
-    private void login(String token) {
-        if (properties.isFake()) {
-            return;
-        }
-
-        Subject subject = SecurityUtils.getSubject();
-        if (subject.isAuthenticated()) {
-            log.warn("subject is authenticated.");
-        } else {
-            SecurityUtils.getSubject().login(new StatelessToken(token));
-        }
-    }
-
-    private void logout() {
-        if (properties.isFake()) {
-            return;
-        }
-
-        Subject subject = SecurityUtils.getSubject();
-        if (subject != null && subject.isAuthenticated()) {
-            subject.logout();
+            messageHandler.consumeAsFailure(e, message);
         }
     }
 }

@@ -1,7 +1,8 @@
-package com.deepexi.support.amqp.listener.model;
+package com.deepexi.support.amqp.listener;
 
 import lombok.Data;
-import lombok.experimental.Accessors;
+
+import java.util.Map;
 
 /**
  * @author Y.H.Zhou
@@ -9,9 +10,8 @@ import lombok.experimental.Accessors;
  * <p></p>
  */
 @Data
-@Accessors(chain = true)
 public class Message {
     private String messageId;
-    private String token;
+    private Map headers;
     private Object data;
 }

@@ -7,5 +7,5 @@ package com.deepexi.support.amqp.listener;
  */
 @FunctionalInterface
 public interface Action {
-    void consume();
+    void exec();
 }
