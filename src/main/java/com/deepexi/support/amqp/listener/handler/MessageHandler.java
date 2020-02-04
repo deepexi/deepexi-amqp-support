@@ -8,9 +8,6 @@ import com.deepexi.support.amqp.listener.Message;
  * <p></p>
  */
 public interface MessageHandler {
-    default void preExec(Message message) {}
-
-    default void postExec(Message message) {}
 
     default void handleDefaultListener(Message message) {}
 

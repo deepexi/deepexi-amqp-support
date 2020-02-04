@@ -56,13 +56,11 @@ public abstract class AbstractListener {
             return;
         }
 
-        messageHandler.preExec(message);
         try {
             action.exec();
             messageHandler.consumeAsSuccess(message);
         } catch (Exception e) {
             messageHandler.consumeAsFailure(e, message);
         }
-        messageHandler.postExec(message);
     }
 }
