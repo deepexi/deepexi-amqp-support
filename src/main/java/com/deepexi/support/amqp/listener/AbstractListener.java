@@ -1,12 +1,13 @@
 package com.deepexi.support.amqp.listener;
 
 import com.deepexi.support.amqp.listener.handler.MessageHandler;
+import com.deepexi.support.amqp.listener.handler.SimpleMessageHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.Headers;
 
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author Y.H.Zhou
@@ -15,38 +16,53 @@ import java.util.Map;
  */
 @Slf4j
 public abstract class AbstractListener {
-    @Autowired
     private MessageHandler messageHandler;
-    @Autowired
-    private MessageHelper messageHelper;
 
-    @RabbitHandler(isDefault = true)
-    public final void listen(Object message, @Headers Map headers) {
-        String messageId = messageHelper.getMessageId(headers);
-        if (messageHelper.isConsumed(messageId)) {
-            log.warn("message[message id: {}] has been consumed. it will be ignored.", messageId);
-            return;
+    public AbstractListener(MessageHandler messageHandler) {
+        if (Objects.isNull(messageHandler)) {
+            throw new IllegalArgumentException("MessageHandler must not be null.");
         }
 
-        messageHandler.defaultListenerHandle(messageHelper.messageBuilder(headers, message));
+        this.messageHandler = messageHandler;
     }
 
-    public final void consume(Map headers, Object data, Action action) {
-        String messageId = messageHelper.getMessageId(headers);
-        if (messageHelper.isConsumed(messageId)) {
-            log.warn("message[message id: {}] has been consumed. it will be ignored.", messageId);
+    public AbstractListener() {
+        this.messageHandler = new SimpleMessageHandler();
+    }
+
+    @RabbitHandler(isDefault = true)
+    public final void listen(Object messageData, @Headers Map headers) {
+        Message message = Message.builder(MessageHelper.getMessageId(headers))
+                .headers(headers)
+                .messageData(messageData)
+                .build();
+
+        if (message.isConsumed()) {
+            messageHandler.handleConsumedMessage(message);
             return;
         }
 
-        Message message = messageHelper.messageBuilder(headers, data);
-        try {
-            messageHandler.preHandle(message);
-            action.exec();
-            messageHandler.postHandle(message);
+        messageHandler.handleDefaultListener(message);
+    }
 
+    protected final void process(Map headers, Object messageData, Action action) {
+        Message message = Message.builder(MessageHelper.getMessageId(headers))
+                .headers(headers)
+                .messageData(messageData)
+                .build();
+
+        if (message.isConsumed()) {
+            messageHandler.handleConsumedMessage(message);
+            return;
+        }
+
+        messageHandler.preExec(message);
+        try {
+            action.exec();
             messageHandler.consumeAsSuccess(message);
         } catch (Exception e) {
             messageHandler.consumeAsFailure(e, message);
         }
+        messageHandler.postExec(message);
     }
 }
