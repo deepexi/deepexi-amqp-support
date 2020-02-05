@@ -8,7 +8,14 @@ import org.springframework.messaging.Message;
  * <p></p>
  */
 public interface ListenerExtensionHandler {
-    default void preHandle(Message message) {}
+
+    /**
+     * @param message
+     * @return 是否继续消费
+     */
+    default boolean preHandle(Message message) {
+        return true;
+    }
 
     default void postHandle(Message message) {}
 }

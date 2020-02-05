@@ -1,16 +1,17 @@
 package com.deepexi.support.amqp.listener;
 
-import com.deepexi.support.amqp.listener.extension.RabbitConfigExtensionBeanFactoryPostProcessor;
-import com.deepexi.support.amqp.listener.extension.RabbitListenerAnnotationBeanPostProcessorExtension;
 import com.deepexi.support.amqp.listener.handler.ListenerExtensionHandler;
 import com.deepexi.support.amqp.listener.handler.MessageHandler;
+import com.deepexi.support.amqp.listener.handler.SimpleListenerExtensionHandler;
 import com.deepexi.support.amqp.listener.handler.SimpleMessageHandler;
-import org.springframework.amqp.rabbit.annotation.RabbitListenerAnnotationBeanPostProcessor;
+import org.springframework.amqp.rabbit.annotation.RabbitListenerConfigurer;
+import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistrar;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.messaging.Message;
+import org.springframework.messaging.handler.annotation.support.MessageHandlerMethodFactory;
 
 /**
  * @author Y.H.Zhou
@@ -18,10 +19,16 @@ import org.springframework.messaging.Message;
  * <p></p>
  */
 @Configuration
-public class AmqpSupportConfig  {
+public class AmqpSupportConfig implements RabbitListenerConfigurer {
 
     @Autowired
     private ListenerExtensionHandler listenerExtensionHandler;
+
+    @Autowired
+    private MessageHandler messageHandler;
+
+    @Autowired
+    private BeanFactory beanFactory;
 
     @ConditionalOnMissingBean({MessageHandler.class})
     @Bean
@@ -32,26 +39,18 @@ public class AmqpSupportConfig  {
     @ConditionalOnMissingBean({ListenerExtensionHandler.class})
     @Bean
     public ListenerExtensionHandler getListenerExtensionHandler() {
-        return new ListenerExtensionHandler() {
-            @Override
-            public void preHandle(Message message) {
-
-            }
-
-            @Override
-            public void postHandle(Message message) {
-
-            }
-        };
+        return new SimpleListenerExtensionHandler(messageHandler);
     }
 
-    @Bean
-    public RabbitConfigExtensionBeanFactoryPostProcessor getRabbitConfigExtensionBeanFactory() {
-        return new RabbitConfigExtensionBeanFactoryPostProcessor();
+    @Override
+    public void configureRabbitListeners(RabbitListenerEndpointRegistrar registrar) {
+        registrar.setMessageHandlerMethodFactory(createMessageHandlerMethodFactory());
     }
 
-    @Bean
-    public RabbitListenerAnnotationBeanPostProcessor getRabbitListenerAnnotationBeanPostProcessor() {
-        return new RabbitListenerAnnotationBeanPostProcessorExtension(listenerExtensionHandler);
+    private MessageHandlerMethodFactory createMessageHandlerMethodFactory() {
+        DefaultExtensionMessageHandlerMethodFactory handlerMethodFactory = new DefaultExtensionMessageHandlerMethodFactory(listenerExtensionHandler);
+        handlerMethodFactory.setBeanFactory(beanFactory);
+        handlerMethodFactory.afterPropertiesSet();
+        return handlerMethodFactory;
     }
 }

@@ -51,11 +51,6 @@ public abstract class AbstractListener {
                 .messageData(messageData)
                 .build();
 
-        if (message.isConsumed()) {
-            messageHandler.handleConsumedMessage(message);
-            return;
-        }
-
         try {
             action.exec();
             messageHandler.consumeAsSuccess(message);

@@ -1,5 +1,7 @@
 package com.deepexi.support.amqp.listener;
 
+import org.springframework.messaging.MessageHeaders;
+import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import java.util.Map;
@@ -11,25 +13,27 @@ import java.util.Map;
  */
 public class Message {
     private String messageId;
-    private Map headers;
+    private MessageHeaders messageHeaders;
     private Object data;
+
+    private Message() {
+
+    }
 
     public boolean isConsumed() {
         return false;
     }
 
-    private Message() {}
-
     public String getMessageId() {
         return messageId;
     }
 
-    public Map getHeaders() {
-        return headers;
+    public MessageHeaders getHeaders() {
+        return this.messageHeaders;
     }
 
-    public void setHeaders(Map headers) {
-        this.headers = headers;
+    public void setHeaders(Map<String, Object> headers) {
+        this.messageHeaders = new MessageHeaders(headers);
     }
 
     public Object getData() {
@@ -59,7 +63,7 @@ public class Message {
     public static class Builder {
         private Message message;
 
-        public Builder headers(Map headers) {
+        public Builder headers(Map<String, Object> headers) {
             this.message.setHeaders(headers);
             return this;
         }
