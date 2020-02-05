@@ -23,14 +23,7 @@ public class DefaultExtensionMessageHandlerMethodFactory extends DefaultMessageH
             new HandlerMethodArgumentResolverComposite();
 
     public DefaultExtensionMessageHandlerMethodFactory(ListenerExtensionHandler listenerExtensionHandler) {
-        this.listenerExtensionHandler = listenerExtensionHandler;
-    }
-
-    public DefaultExtensionMessageHandlerMethodFactory() {
-        super();
-    }
-
-    public void setListenerExtensionHandler(ListenerExtensionHandler listenerExtensionHandler) {
+        Objects.requireNonNull(listenerExtensionHandler, "listenerExtensionHandler");
         this.listenerExtensionHandler = listenerExtensionHandler;
     }
 
@@ -46,15 +39,9 @@ public class DefaultExtensionMessageHandlerMethodFactory extends DefaultMessageH
 
     @Override
     public InvocableHandlerMethod createInvocableHandlerMethod(Object bean, Method method) {
-        if (Objects.isNull(listenerExtensionHandler)) {
-            return super.createInvocableHandlerMethod(bean, method);
-        }
-
         InvocableExtensionHandlerMethod handlerMethod = new InvocableExtensionHandlerMethod(bean, method, listenerExtensionHandler);
-
         argumentResolvers.addResolvers(super.initArgumentResolvers());
         handlerMethod.setMessageMethodArgumentResolvers(argumentResolvers);
-
         return handlerMethod;
     }
 }

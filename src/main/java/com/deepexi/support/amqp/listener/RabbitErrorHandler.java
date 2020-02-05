@@ -1,11 +1,10 @@
-package com.deepexi.support.amqp.listener.handler;
+package com.deepexi.support.amqp.listener;
 
-import com.deepexi.support.amqp.listener.Message;
+import com.deepexi.support.amqp.listener.handler.ListenerErrorHandler;
 import org.springframework.amqp.rabbit.listener.RabbitListenerErrorHandler;
 import org.springframework.amqp.rabbit.listener.exception.ListenerExecutionFailedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 
 /**
  * @author Y.H.Zhou
@@ -16,7 +15,7 @@ import org.springframework.stereotype.Component;
 public final class RabbitErrorHandler implements RabbitListenerErrorHandler {
 
     @Autowired
-    private MessageHandler messageHandler;
+    private ListenerErrorHandler listenerErrorHandler;
 
     @Override
     public Object handleError(org.springframework.amqp.core.Message amqpMessage, org.springframework.messaging.Message<?> message, ListenerExecutionFailedException exception) {
@@ -25,6 +24,6 @@ public final class RabbitErrorHandler implements RabbitListenerErrorHandler {
                 .messageData(message.getPayload())
                 .build();
 
-        return messageHandler.listenAsFailure(message1);
+        return listenerErrorHandler.listenAsFailure(message1);
     }
 }

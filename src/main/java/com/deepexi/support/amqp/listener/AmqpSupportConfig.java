@@ -2,10 +2,13 @@ package com.deepexi.support.amqp.listener;
 
 import com.deepexi.support.amqp.listener.extension.DefaultExtensionMessageHandlerMethodFactory;
 import com.deepexi.support.amqp.listener.handler.*;
+import com.deepexi.support.amqp.listener.handler.simple.SimpleListenerErrorHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListenerConfigurer;
 import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistrar;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.handler.annotation.support.MessageHandlerMethodFactory;
 
@@ -24,6 +27,12 @@ public class AmqpSupportConfig implements RabbitListenerConfigurer {
 
     @Autowired
     private BeanFactory beanFactory;
+
+    @Bean
+    @ConditionalOnMissingBean({ListenerErrorHandler.class})
+    public ListenerErrorHandler getMessageHandler() {
+        return new SimpleListenerErrorHandler();
+    }
 
     @Override
     public void configureRabbitListeners(RabbitListenerEndpointRegistrar registrar) {

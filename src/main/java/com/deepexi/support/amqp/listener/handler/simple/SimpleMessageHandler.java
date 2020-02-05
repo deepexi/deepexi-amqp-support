@@ -1,6 +1,7 @@
 package com.deepexi.support.amqp.listener.handler.simple;
 
 import com.deepexi.support.amqp.listener.Message;
+import com.deepexi.support.amqp.listener.handler.ListenerErrorHandler;
 import com.deepexi.support.amqp.listener.handler.MessageHandler;
 import lombok.extern.slf4j.Slf4j;
 
@@ -10,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
  * <p></p>
  */
 @Slf4j
-public class SimpleMessageHandler implements MessageHandler {
+public class SimpleMessageHandler implements MessageHandler, ListenerErrorHandler {
 
     @Override
     public void handleDefaultListener(Message message) {
@@ -25,11 +26,5 @@ public class SimpleMessageHandler implements MessageHandler {
     @Override
     public void consumeAsFailure(Exception e, Message message) {
         log.warn("message[{}] consume failed.", message.getMessageId(), e);
-    }
-
-    @Override
-    public Object listenAsFailure(Message message) {
-        log.info("message[{}] listener execute failed.", message.getMessageId());
-        return null;
     }
 }

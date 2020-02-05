@@ -3,9 +3,9 @@ package com.deepexi.support.amqp.listener.extension;
 import com.deepexi.support.amqp.listener.handler.ListenerExtensionHandler;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.handler.invocation.InvocableHandlerMethod;
-import org.springframework.util.Assert;
 
 import java.lang.reflect.Method;
+import java.util.Objects;
 
 /**
  * @author Y.H.Zhou
@@ -18,7 +18,7 @@ public class InvocableExtensionHandlerMethod extends InvocableHandlerMethod {
 
     public InvocableExtensionHandlerMethod(Object bean, Method method, ListenerExtensionHandler listenerExtensionHandler) {
         super(bean, method);
-        Assert.notNull(listenerExtensionHandler, "ListenerExtensionHandler could not be null.");
+        Objects.requireNonNull(listenerExtensionHandler, "ListenerExtensionHandler");
         this.listenerExtensionHandler = listenerExtensionHandler;
     }
 

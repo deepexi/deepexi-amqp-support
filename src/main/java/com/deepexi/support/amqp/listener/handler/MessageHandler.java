@@ -23,13 +23,4 @@ public interface MessageHandler {
      * @param message
      */
     default void consumeAsFailure(Exception e, Message message) {}
-
-    /**
-     * 监听器异常回调
-     * @param message
-     * @return
-     */
-    default Object listenAsFailure(Message message) {
-        return null;
-    }
 }

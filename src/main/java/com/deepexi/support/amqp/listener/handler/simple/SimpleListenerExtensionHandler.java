@@ -5,7 +5,8 @@ import com.deepexi.support.amqp.listener.handler.MessageSupport;
 import com.deepexi.support.amqp.listener.util.MessageHelper;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
-import org.springframework.util.Assert;
+
+import java.util.Objects;
 
 /**
  * @author Y.H.Zhou
@@ -17,7 +18,7 @@ public class SimpleListenerExtensionHandler implements ListenerExtensionHandler 
     private MessageSupport messageSupport;
 
     public SimpleListenerExtensionHandler(MessageSupport messageSupport) {
-        Assert.notNull(messageSupport, "MessageHandler could not be null.");
+        Objects.requireNonNull(messageSupport, "messageSupport");
         this.messageSupport = messageSupport;
     }
 

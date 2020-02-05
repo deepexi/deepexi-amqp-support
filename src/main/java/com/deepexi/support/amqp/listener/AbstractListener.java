@@ -9,6 +9,7 @@ import org.springframework.messaging.handler.annotation.Headers;
 import org.springframework.util.Assert;
 
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author Y.H.Zhou
@@ -20,7 +21,7 @@ public abstract class AbstractListener {
     private MessageHandler messageHandler;
 
     public AbstractListener(MessageHandler messageHandler) {
-        Assert.notNull(messageHandler, "MessageHandler must not be null.");
+        Objects.requireNonNull(messageHandler, "messageHandler");
         this.messageHandler = messageHandler;
     }
 
@@ -38,7 +39,7 @@ public abstract class AbstractListener {
         messageHandler.handleDefaultListener(message);
     }
 
-    protected final void process(Map headers, Object messageData, Action action) {
+    protected final void processMessage(Map headers, Object messageData, Action action) {
         Message message = Message.builder(MessageHelper.getMessageId(headers))
                 .headers(headers)
                 .messageData(messageData)
@@ -48,6 +49,7 @@ public abstract class AbstractListener {
             action.exec();
         } catch (Exception e) {
             messageHandler.consumeAsFailure(e, message);
+            return;
         }
 
         messageHandler.consumeAsSuccess(message);
