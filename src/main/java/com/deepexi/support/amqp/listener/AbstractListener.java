@@ -5,6 +5,7 @@ import com.deepexi.support.amqp.listener.handler.SimpleMessageHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.messaging.handler.annotation.Headers;
+import org.springframework.util.Assert;
 
 import java.util.Map;
 import java.util.Objects;
@@ -19,10 +20,7 @@ public abstract class AbstractListener {
     private MessageHandler messageHandler;
 
     public AbstractListener(MessageHandler messageHandler) {
-        if (Objects.isNull(messageHandler)) {
-            throw new IllegalArgumentException("MessageHandler must not be null.");
-        }
-
+        Assert.notNull(messageHandler, "MessageHandler must not be null.");
         this.messageHandler = messageHandler;
     }
 
@@ -37,11 +35,6 @@ public abstract class AbstractListener {
                 .messageData(messageData)
                 .build();
 
-        if (message.isConsumed()) {
-            messageHandler.handleConsumedMessage(message);
-            return;
-        }
-
         messageHandler.handleDefaultListener(message);
     }
 
@@ -53,9 +46,10 @@ public abstract class AbstractListener {
 
         try {
             action.exec();
-            messageHandler.consumeAsSuccess(message);
         } catch (Exception e) {
             messageHandler.consumeAsFailure(e, message);
         }
+
+        messageHandler.consumeAsSuccess(message);
     }
 }

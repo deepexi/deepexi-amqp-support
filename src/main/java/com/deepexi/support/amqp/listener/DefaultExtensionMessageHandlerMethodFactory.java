@@ -1,8 +1,6 @@
 package com.deepexi.support.amqp.listener;
 
 import com.deepexi.support.amqp.listener.handler.ListenerExtensionHandler;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.messaging.converter.GenericMessageConverter;
 import org.springframework.messaging.handler.annotation.support.DefaultMessageHandlerMethodFactory;
 import org.springframework.messaging.handler.invocation.HandlerMethodArgumentResolver;
 import org.springframework.messaging.handler.invocation.HandlerMethodArgumentResolverComposite;
@@ -10,6 +8,7 @@ import org.springframework.messaging.handler.invocation.InvocableHandlerMethod;
 
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Y.H.Zhou
@@ -29,10 +28,11 @@ public class DefaultExtensionMessageHandlerMethodFactory extends DefaultMessageH
 
     @Override
     public void setArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
-        if (argumentResolvers == null) {
+        if (Objects.isNull(argumentResolvers)) {
             this.argumentResolvers.clear();
             return;
         }
+
         this.argumentResolvers.addResolvers(argumentResolvers);
     }
 

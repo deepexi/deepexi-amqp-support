@@ -49,19 +49,20 @@ public class Message {
     }
 
     public static Builder builder(String messageId) {
-        if (StringUtils.isEmpty(messageId)) {
-            throw new IllegalArgumentException("message id can not be null.");
-        }
+        Assert.hasText(messageId, "message id can not be null.");
 
-        Builder builder = new Builder();
         Message message = new Message();
         message.setMessageId(messageId);
 
-        return builder;
+        return new Builder(message);
     }
 
     public static class Builder {
         private Message message;
+
+        private Builder(Message message) {
+            this.message = message;
+        }
 
         public Builder headers(Map<String, Object> headers) {
             this.message.setHeaders(headers);
@@ -75,10 +76,6 @@ public class Message {
 
         public Message build() {
             return this.message;
-        }
-
-        private Builder() {
-
         }
     }
 }

@@ -27,10 +27,12 @@ public class InvocableExtensionHandlerMethod extends InvocableHandlerMethod {
             return super.invoke(message, providedArgs);
         }
 
-        listenerExtensionHandler.preHandle(message);
+        if (listenerExtensionHandler.preHandle(message)) {
+            return null;
+        }
+
         Object result = super.invoke(message, providedArgs);
         listenerExtensionHandler.postHandle(message);
-
         return result;
     }
 }
