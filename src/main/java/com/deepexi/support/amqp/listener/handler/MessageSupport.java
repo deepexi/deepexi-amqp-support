@@ -1,4 +1,6 @@
-package com.deepexi.support.amqp.listener;
+package com.deepexi.support.amqp.listener.handler;
+
+import com.deepexi.support.amqp.listener.Message;
 
 /**
  * @author Y.H.Zhou

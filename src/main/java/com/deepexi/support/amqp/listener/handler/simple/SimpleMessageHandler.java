@@ -1,6 +1,7 @@
-package com.deepexi.support.amqp.listener.handler;
+package com.deepexi.support.amqp.listener.handler.simple;
 
 import com.deepexi.support.amqp.listener.Message;
+import com.deepexi.support.amqp.listener.handler.MessageHandler;
 import lombok.extern.slf4j.Slf4j;
 
 /**

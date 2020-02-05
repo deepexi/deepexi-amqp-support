@@ -1,7 +1,6 @@
-package com.deepexi.support.amqp.listener;
+package com.deepexi.support.amqp.listener.extension;
 
 import com.deepexi.support.amqp.listener.handler.ListenerExtensionHandler;
-import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.messaging.handler.annotation.support.DefaultMessageHandlerMethodFactory;
 import org.springframework.messaging.handler.invocation.HandlerMethodArgumentResolver;
 import org.springframework.messaging.handler.invocation.HandlerMethodArgumentResolverComposite;

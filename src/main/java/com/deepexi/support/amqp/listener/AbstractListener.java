@@ -1,14 +1,14 @@
 package com.deepexi.support.amqp.listener;
 
 import com.deepexi.support.amqp.listener.handler.MessageHandler;
-import com.deepexi.support.amqp.listener.handler.SimpleMessageHandler;
+import com.deepexi.support.amqp.listener.handler.simple.SimpleMessageHandler;
+import com.deepexi.support.amqp.listener.util.MessageHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.messaging.handler.annotation.Headers;
 import org.springframework.util.Assert;
 
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * @author Y.H.Zhou

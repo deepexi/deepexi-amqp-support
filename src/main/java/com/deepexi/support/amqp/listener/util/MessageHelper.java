@@ -1,4 +1,4 @@
-package com.deepexi.support.amqp.listener;
+package com.deepexi.support.amqp.listener.util;
 
 import org.springframework.amqp.support.AmqpHeaders;
 import org.springframework.messaging.MessageHeaders;

@@ -1,5 +1,6 @@
 package com.deepexi.support.amqp.listener;
 
+import com.deepexi.support.amqp.listener.extension.DefaultExtensionMessageHandlerMethodFactory;
 import com.deepexi.support.amqp.listener.handler.*;
 import org.springframework.amqp.rabbit.annotation.RabbitListenerConfigurer;
 import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistrar;
