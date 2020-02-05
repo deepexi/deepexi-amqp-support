@@ -11,8 +11,6 @@ public interface MessageHandler {
 
     default void handleDefaultListener(Message message) {}
 
-    default void handleConsumedMessage(Message message) {}
-
     /**
      * 消费成功回调
      * @param message

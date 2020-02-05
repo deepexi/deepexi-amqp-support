@@ -1,17 +1,14 @@
 package com.deepexi.support.amqp.listener;
 
-import com.deepexi.support.amqp.listener.handler.ListenerExtensionHandler;
-import com.deepexi.support.amqp.listener.handler.MessageHandler;
-import com.deepexi.support.amqp.listener.handler.SimpleListenerExtensionHandler;
-import com.deepexi.support.amqp.listener.handler.SimpleMessageHandler;
+import com.deepexi.support.amqp.listener.handler.*;
 import org.springframework.amqp.rabbit.annotation.RabbitListenerConfigurer;
 import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistrar;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.handler.annotation.support.MessageHandlerMethodFactory;
+
+import java.util.Objects;
 
 /**
  * @author Y.H.Zhou
@@ -21,29 +18,18 @@ import org.springframework.messaging.handler.annotation.support.MessageHandlerMe
 @Configuration
 public class AmqpSupportConfig implements RabbitListenerConfigurer {
 
-    @Autowired
+    @Autowired(required = false)
     private ListenerExtensionHandler listenerExtensionHandler;
-
-    @Autowired
-    private MessageHandler messageHandler;
 
     @Autowired
     private BeanFactory beanFactory;
 
-    @ConditionalOnMissingBean({MessageHandler.class})
-    @Bean
-    public MessageHandler getMessageHandler() {
-        return new SimpleMessageHandler();
-    }
-
-    @ConditionalOnMissingBean({ListenerExtensionHandler.class})
-    @Bean
-    public ListenerExtensionHandler getListenerExtensionHandler() {
-        return new SimpleListenerExtensionHandler(messageHandler);
-    }
-
     @Override
     public void configureRabbitListeners(RabbitListenerEndpointRegistrar registrar) {
+        if (Objects.isNull(listenerExtensionHandler)) {
+            return;
+        }
+
         registrar.setMessageHandlerMethodFactory(createMessageHandlerMethodFactory());
     }
 

@@ -20,10 +20,6 @@ public class Message {
 
     }
 
-    public boolean isConsumed() {
-        return false;
-    }
-
     public String getMessageId() {
         return messageId;
     }

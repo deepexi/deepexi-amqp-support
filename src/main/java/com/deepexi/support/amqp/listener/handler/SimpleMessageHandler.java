@@ -17,11 +17,6 @@ public class SimpleMessageHandler implements MessageHandler {
     }
 
     @Override
-    public void handleConsumedMessage(Message message) {
-        log.warn("message[message id: {}] has been consumed. it will be ignored.", message.getMessageId());
-    }
-
-    @Override
     public void consumeAsSuccess(Message message) {
         log.info("message[{}] consume succeed.", message.getMessageId());
     }

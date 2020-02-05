@@ -1,6 +1,7 @@
 package com.deepexi.support.amqp.listener;
 
 import com.deepexi.support.amqp.listener.handler.ListenerExtensionHandler;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.messaging.handler.annotation.support.DefaultMessageHandlerMethodFactory;
 import org.springframework.messaging.handler.invocation.HandlerMethodArgumentResolver;
 import org.springframework.messaging.handler.invocation.HandlerMethodArgumentResolverComposite;
@@ -26,6 +27,14 @@ public class DefaultExtensionMessageHandlerMethodFactory extends DefaultMessageH
         this.listenerExtensionHandler = listenerExtensionHandler;
     }
 
+    public DefaultExtensionMessageHandlerMethodFactory() {
+        super();
+    }
+
+    public void setListenerExtensionHandler(ListenerExtensionHandler listenerExtensionHandler) {
+        this.listenerExtensionHandler = listenerExtensionHandler;
+    }
+
     @Override
     public void setArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
         if (Objects.isNull(argumentResolvers)) {
@@ -38,6 +47,10 @@ public class DefaultExtensionMessageHandlerMethodFactory extends DefaultMessageH
 
     @Override
     public InvocableHandlerMethod createInvocableHandlerMethod(Object bean, Method method) {
+        if (Objects.isNull(listenerExtensionHandler)) {
+            return super.createInvocableHandlerMethod(bean, method);
+        }
+
         InvocableExtensionHandlerMethod handlerMethod = new InvocableExtensionHandlerMethod(bean, method, listenerExtensionHandler);
 
         argumentResolvers.addResolvers(super.initArgumentResolvers());

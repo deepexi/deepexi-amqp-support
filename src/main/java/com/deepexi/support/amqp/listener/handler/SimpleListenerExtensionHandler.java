@@ -1,6 +1,7 @@
 package com.deepexi.support.amqp.listener.handler;
 
 import com.deepexi.support.amqp.listener.MessageHelper;
+import com.deepexi.support.amqp.listener.MessageSupport;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.util.Assert;
@@ -12,11 +13,15 @@ import org.springframework.util.Assert;
  */
 public class SimpleListenerExtensionHandler implements ListenerExtensionHandler {
 
-    private MessageHandler messageHandler;
+    private MessageSupport messageSupport;
 
-    public SimpleListenerExtensionHandler(MessageHandler messageHandler) {
-        Assert.notNull(messageHandler, "MessageHandler could not be null.");
-        this.messageHandler = messageHandler;
+    public SimpleListenerExtensionHandler(MessageSupport messageSupport) {
+        Assert.notNull(messageSupport, "MessageHandler could not be null.");
+        this.messageSupport = messageSupport;
+    }
+
+    public SimpleListenerExtensionHandler() {
+        this.messageSupport = new SimpleMessageSupport();
     }
 
     @Override
@@ -28,8 +33,8 @@ public class SimpleListenerExtensionHandler implements ListenerExtensionHandler 
                 .messageData(message.getPayload())
                 .build();
 
-        if (message1.isConsumed()) {
-            messageHandler.handleConsumedMessage(message1);
+        if (messageSupport.isMessageConsumed(message1)) {
+            messageSupport.handleConsumedMessage(message1);
             return false;
         }
 
