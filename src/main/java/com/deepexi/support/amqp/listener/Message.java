@@ -45,7 +45,7 @@ public class Message {
     }
 
     public static Builder builder(String messageId) {
-        Assert.hasText(messageId, "message id can not be null.");
+        Assert.hasText(messageId, "message id could not be null.");
 
         Message message = new Message();
         message.setMessageId(messageId);

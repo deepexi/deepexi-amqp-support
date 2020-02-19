@@ -86,3 +86,74 @@ public void listen(FooEvent event) {
    // do something with event
 }
 ```
+
+## AbstractListener
+```java
+@Component
+@RabbitListener
+public class SampleListener extends AbstractListener {
+    
+    @Autowired
+    private MessageHandler messageHandler;
+    
+    @RabbitHandler
+    public void listener(Message message, Map headers) {
+        processMessage(headers, message, () -> {
+            // consume message
+        }, messageHandler);  // default is SimpleMessageHandler
+    }
+}
+
+// callback
+@Component
+public class SampleMessageHandler extends MessageHandler {
+
+     public void consumeAsSuccess(Message message) {
+         // ...
+     }
+    
+     public void consumeAsFailure(Exception e, Message message) {
+         // ...
+     }
+}
+```
+
+## AfterMessageReceivedProcessor
+```java
+@Configuration
+public class AmqpConfiguration {
+    
+    @Bean
+    public MessagePostProcessor messagePostProcessor(List<IMessageReceivedHandler> handlers) {
+        MessageReceivedProcessor processor = new MessageReceivedProcessor();
+        processor.addHandlers(handlers);
+        // processor.addHandler(handler)
+        return processor;
+    }
+    
+}
+
+@Component
+public class MessageReceivedHandlerA implements IMessageReceivedHandler {
+     public boolean handle(Message message) {
+         // handle like check message whether has been consumed...
+     }
+    
+    // execute order,default Integer.MAX_VALUE
+    public Integer order() {
+        return 1;
+    }
+}
+
+@Component
+public class MessageReceivedHandlerB implements IMessageReceivedHandler {
+     public boolean handle(Message message) {
+         // handle like check message whether has been consumed...
+     }
+    
+    // execute order,default Integer.MAX_VALUE
+    public Integer order() {
+        return 1;
+    }
+}
+```

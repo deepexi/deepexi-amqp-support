@@ -16,8 +16,9 @@ import java.util.Objects;
 public abstract class MessageHelper {
 
     public static String getMessageId(Map headers) {
+        Objects.requireNonNull(headers, "headers");
         Object messageId = headers.get(AmqpHeaders.MESSAGE_ID);
-        Assert.notNull(messageId, "message id could not be null.");
+        Assert.notNull(messageId, "message id not found.");
         return messageId.toString();
     }
 }

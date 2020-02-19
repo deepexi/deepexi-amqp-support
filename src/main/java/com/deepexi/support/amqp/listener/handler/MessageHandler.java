@@ -9,8 +9,6 @@ import com.deepexi.support.amqp.listener.Message;
  */
 public interface MessageHandler {
 
-    default void handleDefaultListener(Message message) {}
-
     /**
      * 消费成功回调
      * @param message
