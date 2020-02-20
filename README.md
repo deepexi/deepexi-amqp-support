@@ -87,73 +87,38 @@ public void listen(FooEvent event) {
 }
 ```
 
-## AbstractListener
-```java
-@Component
-@RabbitListener
-public class SampleListener extends AbstractListener {
-    
-    @Autowired
-    private MessageHandler messageHandler;
-    
-    @RabbitHandler
-    public void listener(Message message, Map headers) {
-        processMessage(headers, message, () -> {
-            // consume message
-        }, messageHandler);  // default is SimpleMessageHandler
-    }
-}
-
-// callback
-@Component
-public class SampleMessageHandler extends MessageHandler {
-
-     public void consumeAsSuccess(Message message) {
-         // ...
-     }
-    
-     public void consumeAsFailure(Exception e, Message message) {
-         // ...
-     }
-}
-```
-
-## AfterMessageReceivedProcessor
+## MessageHandler
 ```java
 @Configuration
 public class AmqpConfiguration {
-    
+
+    @Autowired
+    BeanFactory beanFactory;
+
     @Bean
-    public MessagePostProcessor messagePostProcessor(List<IMessageReceivedHandler> handlers) {
-        MessageReceivedProcessor processor = new MessageReceivedProcessor();
-        processor.addHandlers(handlers);
-        // processor.addHandler(handler)
-        return processor;
+    public RabbitListenerConfigurer rabbitListenerConfigurer(MessageHandler messageHandler) {
+        return registrar -> registrar.setMessageHandlerMethodFactory(new SimpleMessageHandlerFactory(messageHandler, beanFactory));
     }
-    
-}
 
-@Component
-public class MessageReceivedHandlerA implements IMessageReceivedHandler {
-     public boolean handle(Message message) {
-         // handle like check message whether has been consumed...
-     }
-    
-    // execute order,default Integer.MAX_VALUE
-    public Integer order() {
-        return 1;
-    }
-}
+    @Bean
+    public MessageHandler messageHandler() {
+        return new MessageHandler() {
+            @Override
+            public boolean preHandle(Message message) {
+                // whether continue consume.
+                return false;
+            }
 
-@Component
-public class MessageReceivedHandlerB implements IMessageReceivedHandler {
-     public boolean handle(Message message) {
-         // handle like check message whether has been consumed...
-     }
-    
-    // execute order,default Integer.MAX_VALUE
-    public Integer order() {
-        return 1;
+            @Override
+            public void handleError(Exception e, Message message) {
+                // consume as failed
+            }
+
+            @Override
+            public void postHandle(Message message) {
+
+            }
+        };
     }
 }
 ```
