@@ -6,6 +6,8 @@ import org.springframework.amqp.core.ExchangeTypes;
 import org.springframework.amqp.rabbit.annotation.*;
 import org.springframework.stereotype.Component;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 /**
  * @author taccisum - liaojinfeng@deepexi.com
  * @since 2020-02-21
@@ -22,6 +24,7 @@ public class MyListener {
     @RabbitHandler
     public void handle(BarEvent event) {
         System.out.println(event);
+        assertThat(event.getGreeting()).isEqualTo("hello");
     }
 
     @RabbitHandler

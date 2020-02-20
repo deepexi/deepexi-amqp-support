@@ -30,6 +30,8 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.messaging.Message;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 /**
  * [Important] 执行此集成测试前请先在application.yml中配置一个测试用的rabbitmq
  * </br>
@@ -141,6 +143,8 @@ public class SimpleIntegrationTest {
         FooEvent msg = rabbitTemplate.receiveAndConvert("foo-queue", new ParameterizedTypeReference<FooEvent>() {
         });
         System.out.println("consume message: " + msg);
+        assertThat(msg.getStr()).isEqualTo("val");
+        assertThat(msg.getNum()).isEqualTo(233);
     }
 
     @Test
