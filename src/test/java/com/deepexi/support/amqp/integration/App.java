@@ -1,4 +1,4 @@
-package com.deepexi.support.amqp.event.integration;
+package com.deepexi.support.amqp.integration;
 
 import com.deepexi.support.amqp.event.EventMessageClassMapper;
 import com.deepexi.support.amqp.event.EventMessageTypeMapping;

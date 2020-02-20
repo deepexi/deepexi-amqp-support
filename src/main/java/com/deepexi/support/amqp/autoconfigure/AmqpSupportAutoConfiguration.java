@@ -46,13 +46,15 @@ public class AmqpSupportAutoConfiguration implements BeanFactoryAware {
                 return new InvocableHandlerMethodDecoration(invocableHandlerMethod) {
                     @Override
                     public Object invoke(Message<?> message, Object... providedArgs) throws Exception {
-                        idempotentValidator.valid(message);
-                        authenticator.login(message);
                         boolean success = true;
                         Object result = null;
                         Exception error = null;
                         try {
-                            result = super.invoke(message, providedArgs);
+                            boolean repeated = idempotentValidator.isRepeated(message);
+                            if (!repeated) {
+                                authenticator.login(message);
+                                result = super.invoke(message, providedArgs);
+                            }
                             return result;
                         } catch (Exception e) {
                             success = false;

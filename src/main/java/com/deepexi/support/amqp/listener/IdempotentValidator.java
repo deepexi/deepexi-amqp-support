@@ -9,12 +9,13 @@ import org.springframework.messaging.Message;
  * @since 2020-02-20
  */
 public interface IdempotentValidator {
-    void valid(Message<?> message);
+    boolean isRepeated(Message<?> message);
 
     class Dummy implements IdempotentValidator {
         @Override
-        public void valid(Message<?> message) {
+        public boolean isRepeated(Message<?> message) {
             // do nothing
+            return false;
         }
     }
 }

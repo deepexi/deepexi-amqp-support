@@ -1,5 +1,6 @@
 package com.deepexi.support.amqp.listener;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.support.AmqpHeaders;
 import org.springframework.messaging.Message;
 
@@ -7,6 +8,7 @@ import org.springframework.messaging.Message;
  * @author taccisum - liaojinfeng@deepexi.com
  * @since 2020-02-21
  */
+@Slf4j
 public abstract class AbstractIdempotentValidator implements IdempotentValidator {
     private boolean skipIfMessageIdNull = true;
 
@@ -15,13 +17,17 @@ public abstract class AbstractIdempotentValidator implements IdempotentValidator
     }
 
     @Override
-    public void valid(Message<?> message) {
+    public boolean isRepeated(Message<?> message) {
         Object id = message.getHeaders().get(AmqpHeaders.MESSAGE_ID);
         if (id == null && skipIfMessageIdNull) {
-            return;
+            return false;
         }
-        doValid(id);
+        boolean result = doValid(id);
+        if (result) {
+            log.warn("message[id: {}] is consumed repeatedly.", id);
+        }
+        return result;
     }
 
-    protected abstract void doValid(Object id);
+    protected abstract boolean doValid(Object id);
 }
