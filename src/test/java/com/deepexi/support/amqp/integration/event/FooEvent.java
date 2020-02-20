@@ -1,4 +1,4 @@
-package com.deepexi.support.amqp.event.integration.event;
+package com.deepexi.support.amqp.integration.event;
 
 import com.deepexi.support.amqp.event.EventMessage;
 import lombok.Data;
