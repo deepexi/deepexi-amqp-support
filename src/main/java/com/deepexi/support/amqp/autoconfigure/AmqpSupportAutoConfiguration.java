@@ -1,12 +1,14 @@
 package com.deepexi.support.amqp.autoconfigure;
 
-import com.deepexi.support.amqp.listener.DecoratedMessageHandlerMethodFactory;
-import com.deepexi.support.amqp.listener.InvocableHandlerMethodDecorator;
+import com.deepexi.support.amqp.listener.*;
 import org.springframework.amqp.rabbit.annotation.RabbitListenerConfigurer;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.handler.invocation.InvocableHandlerMethod;
 
 import java.util.List;
 
@@ -23,12 +25,69 @@ public class AmqpSupportAutoConfiguration implements BeanFactoryAware {
     }
 
     @Bean
-    public RabbitListenerConfigurer rabbitListenerConfigurer(List<InvocableHandlerMethodDecorator> decorators) {
+    public RabbitListenerConfigurer rabbitListenerConfigurer0(List<InvocableHandlerMethodDecorator> decorators) {
         return registrar -> {
             DecoratedMessageHandlerMethodFactory factory = new DecoratedMessageHandlerMethodFactory(decorators);
             factory.setBeanFactory(beanFactory);
             factory.afterPropertiesSet();
             registrar.setMessageHandlerMethodFactory(factory);
         };
+    }
+
+    @Bean
+    public InvocableHandlerMethodDecorator invocableHandlerMethodDecorator0(
+            IdempotentValidator idempotentValidator,
+            Authenticator authenticator,
+            MessageRecorder recorder
+    ) {
+        return new InvocableHandlerMethodDecorator() {
+            @Override
+            public InvocableHandlerMethod decorate(InvocableHandlerMethod invocableHandlerMethod) {
+                return new InvocableHandlerMethodDecoration(invocableHandlerMethod) {
+                    @Override
+                    public Object invoke(Message<?> message, Object... providedArgs) throws Exception {
+                        idempotentValidator.valid(message);
+                        authenticator.login(message);
+                        boolean success = true;
+                        Object result = null;
+                        Exception error = null;
+                        try {
+                            result = super.invoke(message, providedArgs);
+                            return result;
+                        } catch (Exception e) {
+                            success = false;
+                            error = e;
+                            throw e;
+                        } finally {
+                            recorder.record(message, success, result, error);
+                            authenticator.logout(message);
+                        }
+                    }
+                };
+            }
+
+            @Override
+            public int getOrder() {
+                return Integer.MIN_VALUE;
+            }
+        };
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public IdempotentValidator idempotentValidator() {
+        return new IdempotentValidator.Dummy();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public Authenticator authenticator() {
+        return new Authenticator.Dummy();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public MessageRecorder messageRecorder() {
+        return new MessageRecorder.Dummy();
     }
 }
