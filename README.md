@@ -87,38 +87,24 @@ public void listen(FooEvent event) {
 }
 ```
 
-## MessageHandler
+## InvocableHandlerMethodDecorator
+
+define beans of `InvocableHandlerMethodDecorator` and make enhancements for all methods that annotated with `@RabbitHandler`.
+
 ```java
-@Configuration
-public class AmqpConfiguration {
-
-    @Autowired
-    BeanFactory beanFactory;
-
-    @Bean
-    public RabbitListenerConfigurer rabbitListenerConfigurer(MessageHandler messageHandler) {
-        return registrar -> registrar.setMessageHandlerMethodFactory(new SimpleMessageHandlerFactory(messageHandler, beanFactory));
-    }
-
-    @Bean
-    public MessageHandler messageHandler() {
-        return new MessageHandler() {
-            @Override
-            public boolean preHandle(Message message) {
-                // whether continue consume.
-                return false;
-            }
-
-            @Override
-            public void handleError(Exception e, Message message) {
-                // consume as failed
-            }
-
-            @Override
-            public void postHandle(Message message) {
-
-            }
-        };
-    }
+@Bean
+public InvocableHandlerMethodDecorator invocableHandlerMethodDecorator() {
+    return new InvocableHandlerMethodDecorator() {
+        @Override
+        public InvocableHandlerMethod decorate(InvocableHandlerMethod invocableHandlerMethod) {
+            return new InvocableHandlerMethodDecoration(invocableHandlerMethod) {
+                @Override
+                public Object invoke(Message<?> message, Object... providedArgs) throws Exception {
+                    // do something here...
+                    return super.invoke(message, providedArgs);
+                }
+            };
+        }
+    };
 }
 ```
