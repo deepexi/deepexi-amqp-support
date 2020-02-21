@@ -19,7 +19,7 @@ public class DecoratedMessageHandlerMethodFactory extends DefaultMessageHandlerM
 
     public DecoratedMessageHandlerMethodFactory(List<InvocableHandlerMethodDecorator> decorators) {
         this.decorators = decorators;
-        this.decorators.sort(Comparator.comparingInt(InvocableHandlerMethodDecorator::getOrder));
+        this.decorators.sort(Comparator.comparingInt(InvocableHandlerMethodDecorator::getOrder).reversed());
     }
 
     @Override
