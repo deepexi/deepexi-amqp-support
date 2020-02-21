@@ -34,28 +34,10 @@ public class DecoratedMessageHandlerMethodFactoryTest {
     public void createInvocableHandlerMethod() throws Exception {
         InvocableHandlerMethod invocableHandlerMethod = factory.createInvocableHandlerMethod(
                 new DecoratedMessageHandlerMethodFactoryTest(),
-                DecoratedMessageHandlerMethodFactoryTest.class.getMethod("method", Integer.class)
+                DecoratedMessageHandlerMethodFactoryTest.class.getMethod("method", String.class)
         );
 
-        assertThat(invocableHandlerMethod.invoke(new GenericMessage<>("null"), 1)).isEqualTo(3);
-    }
-
-    public static class DecoratorA implements InvocableHandlerMethodDecorator {
-
-        @Override
-        public InvocableHandlerMethod decorate(InvocableHandlerMethod invocableHandlerMethod) {
-            return new InvocableHandlerMethodDecoration(invocableHandlerMethod) {
-                @Override
-                public Object invoke(Message<?> message, Object... providedArgs) throws Exception {
-                    return super.invoke(message, (Integer) providedArgs[0] + 1);
-                }
-            };
-        }
-
-        @Override
-        public int getOrder() {
-            return 1;
-        }
+        assertThat(invocableHandlerMethod.invoke(new GenericMessage<>("null"), "1")).isEqualTo("123");
     }
 
     public static class DecoratorB implements InvocableHandlerMethodDecorator {
@@ -65,7 +47,7 @@ public class DecoratedMessageHandlerMethodFactoryTest {
             return new InvocableHandlerMethodDecoration(invocableHandlerMethod) {
                 @Override
                 public Object invoke(Message<?> message, Object... providedArgs) throws Exception {
-                    return super.invoke(message, (Integer) providedArgs[0] + 1);
+                    return super.invoke(message, providedArgs[0] + "2");
                 }
             };
         }
@@ -76,7 +58,27 @@ public class DecoratedMessageHandlerMethodFactoryTest {
         }
     }
 
-    public int method(Integer i) {
+
+    public static class DecoratorA implements InvocableHandlerMethodDecorator {
+
+        @Override
+        public InvocableHandlerMethod decorate(InvocableHandlerMethod invocableHandlerMethod) {
+            return new InvocableHandlerMethodDecoration(invocableHandlerMethod) {
+                @Override
+                public Object invoke(Message<?> message, Object... providedArgs) throws Exception {
+                    return super.invoke(message, providedArgs[0] + "3");
+                }
+            };
+        }
+
+        @Override
+        public int getOrder() {
+            return 1;
+        }
+    }
+
+
+    public String method(String i) {
         return i;
     }
 }
