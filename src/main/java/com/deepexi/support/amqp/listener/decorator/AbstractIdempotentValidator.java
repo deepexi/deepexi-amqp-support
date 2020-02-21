@@ -1,4 +1,4 @@
-package com.deepexi.support.amqp.listener;
+package com.deepexi.support.amqp.listener.decorator;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.support.AmqpHeaders;

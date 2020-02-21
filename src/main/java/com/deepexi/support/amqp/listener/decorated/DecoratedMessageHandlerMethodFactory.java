@@ -1,4 +1,4 @@
-package com.deepexi.support.amqp.listener;
+package com.deepexi.support.amqp.listener.decorated;
 
 import org.springframework.messaging.handler.annotation.support.DefaultMessageHandlerMethodFactory;
 import org.springframework.messaging.handler.invocation.InvocableHandlerMethod;

@@ -1,6 +1,11 @@
 package com.deepexi.support.amqp.autoconfigure;
 
-import com.deepexi.support.amqp.listener.*;
+import com.deepexi.support.amqp.listener.decorated.DecoratedMessageHandlerMethodFactory;
+import com.deepexi.support.amqp.listener.decorated.InvocableHandlerMethodDecoration;
+import com.deepexi.support.amqp.listener.decorated.InvocableHandlerMethodDecorator;
+import com.deepexi.support.amqp.listener.decorator.Authenticator;
+import com.deepexi.support.amqp.listener.decorator.IdempotentValidator;
+import com.deepexi.support.amqp.listener.decorator.MessageRecorder;
 import org.springframework.amqp.rabbit.annotation.RabbitListenerConfigurer;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;

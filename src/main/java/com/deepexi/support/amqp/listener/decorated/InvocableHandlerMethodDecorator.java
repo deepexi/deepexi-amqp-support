@@ -1,4 +1,4 @@
-package com.deepexi.support.amqp.listener;
+package com.deepexi.support.amqp.listener.decorated;
 
 import org.springframework.core.Ordered;
 import org.springframework.messaging.handler.invocation.InvocableHandlerMethod;
