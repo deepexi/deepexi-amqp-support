@@ -86,3 +86,74 @@ public void listen(FooEvent event) {
    // do something with event
 }
 ```
+
+## InvocableHandlerMethodDecorator
+
+define beans of `InvocableHandlerMethodDecorator` and make enhancements for all methods that annotated with `@RabbitHandler`.
+
+```java
+@Bean
+public InvocableHandlerMethodDecorator invocableHandlerMethodDecorator() {
+    return invocableHandlerMethod -> new InvocableHandlerMethodDecoration(invocableHandlerMethod) {
+        @Override
+        public Object invoke(Message<?> message, Object... providedArgs) throws Exception {
+            // do something here...
+            return super.invoke(message, providedArgs);
+        }
+    };
+}
+```
+
+### IdempotentValidator
+
+you can valid if message is handled repeatedly by define bean of `IdempotentValidator`
+
+```java
+@Bean
+public IdempotentValidator idempotentValidator() {
+    return new IdempotentValidator() {
+        @Override
+        public void valid(Message<?> message) {
+            // do valid here
+        }
+    };
+}
+```
+
+### Authenticator
+
+you can do login before consume message and do logout after consume message by define bean of `Authenticator`
+
+```java
+@Bean
+public Authenticator authenticator() {
+    return new Authenticator() {
+        @Override
+        public void login(Message<?> message) {
+            // do login here
+        }
+
+        @Override
+        public void logout(Message<?> message) {
+            // do logout here
+        }
+    };
+}
+```
+
+### MessageRecorder
+
+you can record message and other info after consume message by define bean of `MessageRecorder`
+
+```java
+@Bean
+public MessageRecorder messageRecorder() {
+    return new MessageRecorder() {
+        @Override
+        public void record(Message<?> message, boolean success, Object result, Exception error) {
+            // do record here
+        }
+    }
+}
+```
+
