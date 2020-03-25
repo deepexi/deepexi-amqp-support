@@ -3,7 +3,6 @@ package com.deepexi.support.amqp.event;
 import com.deepexi.support.amqp.App;
 import com.deepexi.support.amqp.event.asset.Foo4;
 import com.deepexi.support.amqp.event.exception.EventMessageException;
-import com.sun.deploy.util.SystemUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit4.SpringRunner;
-import sun.plugin2.util.SystemUtil;
 
 import java.util.Map;
 
