@@ -59,6 +59,37 @@ public class FooEvent {
 }
 ```
 
+use ExchangeResolver to dynamic set exchange
+
+```yml
+# application.yml
+eg:
+  exchange: DEFAULT-EXCHANGE
+```
+
+```java
+@Configuration
+public class AmqpConfiguration {
+    
+    // ...
+    
+    @Bean
+    public EventMessageTypeMapping eventMessageTypeMapping(ExchangeResolver resolver) {
+        return new EventMessageTypeMapping.Builder()
+                .resolver(resolver)  // set resolver
+                .pkg("my.pkg")
+                .build();
+    }
+}
+
+// exchange will be set to DEFAULT-EXCHANGE
+@EventMessage(exchange = "${eg.exchange}", code = "foo")
+public class FooEvent {
+    // ...
+}
+```
+> the default ExchangeResolver is com.deepexi.support.amqp.event.PlaceHolderExchangeResolver,replace the default via implement com.deepexi.support.amqp.event.ExchangeResolver 
+
 send event message
 
 ```java

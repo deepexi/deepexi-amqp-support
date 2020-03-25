@@ -54,6 +54,7 @@ public class EventMessageTypeMapping {
         private List<String> pkgs = new ArrayList<>();
         private boolean strict = true;
         private Class<?> def;
+        private ExchangeResolver resolver;
 
         public Builder def(Class<?> def) {
             this.def = def;
@@ -72,6 +73,11 @@ public class EventMessageTypeMapping {
 
         public Builder strict(boolean strict) {
             this.strict = strict;
+            return this;
+        }
+
+        public Builder resolver(ExchangeResolver resolver) {
+            this.resolver = resolver;
             return this;
         }
 
@@ -96,7 +102,8 @@ public class EventMessageTypeMapping {
                         log.warn("Class {} without annotation {} will be ignored.", clazz, EventMessage.class);
                     }
                 } else {
-                    mapping.addMapping(annotation.exchange(), annotation.code(), clazz);
+                    String exchange = annotation.exchange();
+                    mapping.addMapping(Objects.isNull(resolver) ? exchange : resolver.resolve(exchange), annotation.code(), clazz);
                 }
             }
 

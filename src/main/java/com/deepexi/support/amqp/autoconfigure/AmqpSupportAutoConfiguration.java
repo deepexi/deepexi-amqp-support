@@ -1,5 +1,7 @@
 package com.deepexi.support.amqp.autoconfigure;
 
+import com.deepexi.support.amqp.event.ExchangeResolver;
+import com.deepexi.support.amqp.event.PlaceHolderExchangeResolver;
 import com.deepexi.support.amqp.listener.decorated.DecoratedMessageHandlerMethodFactory;
 import com.deepexi.support.amqp.listener.decorated.InvocableHandlerMethodDecoration;
 import com.deepexi.support.amqp.listener.decorated.InvocableHandlerMethodDecorator;
@@ -96,5 +98,11 @@ public class AmqpSupportAutoConfiguration implements BeanFactoryAware {
     @ConditionalOnMissingBean
     public MessageRecorder messageRecorder() {
         return new MessageRecorder.Dummy();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(ExchangeResolver.class)
+    public ExchangeResolver exchangeResolver() {
+        return new PlaceHolderExchangeResolver();
     }
 }
