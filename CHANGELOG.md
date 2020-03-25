@@ -6,4 +6,16 @@
 
 - provide EventMessageClassMapper
 
+- provide InvocableHandlerMethodDecorator
 
+- provide IdempotentValidator
+
+- provide Authenticator
+
+- provide MessageRecorder
+
+## 1.1.0-SNAPSHOT
+
+### Features 
+
+- provide ExchangeResolver
