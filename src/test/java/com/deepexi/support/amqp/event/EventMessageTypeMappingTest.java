@@ -4,6 +4,7 @@ import com.deepexi.support.amqp.App;
 import com.deepexi.support.amqp.event.asset.Foo4;
 import com.deepexi.support.amqp.event.exception.EventMessageException;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Ignore
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = App.class)
 public class EventMessageTypeMappingTest {

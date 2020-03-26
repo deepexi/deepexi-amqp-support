@@ -57,7 +57,7 @@ public class FooEvent {
 }
 ```
 
-support placeHolder to resolve exchange and code
+support resolve (exchange & code) that contains placeholder ${}
 
 ```yml
 # application.yml

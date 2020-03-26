@@ -18,4 +18,4 @@
 
 ### Features 
 
-- support resolve @EventMessage placeHolder ${}
+- support resolve @EventMessage that contains placeHolder ${}
