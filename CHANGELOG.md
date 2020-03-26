@@ -18,4 +18,4 @@
 
 ### Features 
 
-- provide ExchangeResolver
+- support resolve @EventMessage placeHolder ${}

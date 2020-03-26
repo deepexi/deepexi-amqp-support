@@ -8,20 +8,19 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(classes = App.class)
 @RunWith(SpringRunner.class)
+@SpringBootTest(classes = App.class)
 public class EventMessageTypeMappingTest {
     private EventMessageTypeMapping mapping;
 
     @Autowired
-    private ExchangeResolver exchangeResolver;
+    private EventMessageTypeMapping typeMapping;
 
     @Before
     public void setUp() throws Exception {
@@ -56,19 +55,7 @@ public class EventMessageTypeMappingTest {
     }
 
     @Test
-    public void builder() {
-        assertThat(exchangeResolver).isNotNull();
-
-        EventMessageTypeMapping typeMapping = new EventMessageTypeMapping.Builder()
-                .pkg("com.deepexi.support.amqp.event.asset")
-                .resolver(exchangeResolver)
-                .build();
-
+    public void placeHolderResolve() {
         assertThat(typeMapping.getMapping("default", "foo4")).isEqualTo(Foo4.class);
-    }
-
-    @Bean
-    public ExchangeResolver exchangeResolver() {
-        return new PlaceHolderExchangeResolver();
     }
 }

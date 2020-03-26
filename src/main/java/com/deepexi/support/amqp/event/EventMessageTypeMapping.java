@@ -3,6 +3,10 @@ package com.deepexi.support.amqp.event;
 import com.deepexi.support.amqp.event.exception.EventMessageException;
 import com.deepexi.support.amqp.event.util.EventMessageUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.EnvironmentAware;
+import org.springframework.core.env.Environment;
+import org.springframework.util.Assert;
 
 import java.util.*;
 
@@ -10,9 +14,34 @@ import java.util.*;
  * @author taccisum - liaojinfeng@deepexi.com
  * @since 2019-11-25
  */
-public class EventMessageTypeMapping {
+@Slf4j
+public class EventMessageTypeMapping implements EnvironmentAware, InitializingBean {
     Map<String, Map<String, Class<?>>> code2clazzMapping;
     private Class<?> defaultMappingClass;
+    private Environment environment;
+    private Set<Class<?>> classes = new HashSet<>();
+    private boolean strict = true;
+
+    @Override
+    public void setEnvironment(Environment environment) {
+        this.environment = environment;
+    }
+
+    @Override
+    public void afterPropertiesSet() {
+        for (Class<?> clazz : classes) {
+            EventMessage annotation = EventMessageUtils.findAnnotation(clazz);
+            if (annotation == null) {
+                if (strict) {
+                    throw new EventMessageException(String.format("Should add annotation %s to class %s.", EventMessage.class, clazz));
+                } else {
+                    log.warn("Class {} without annotation {} will be ignored.", clazz, EventMessage.class);
+                }
+            } else {
+                addMapping(resolvePlaceHolder(annotation.exchange()), resolvePlaceHolder(annotation.code()), clazz);
+            }
+        }
+    }
 
     public EventMessageTypeMapping() {
         code2clazzMapping = new HashMap<>();
@@ -42,6 +71,19 @@ public class EventMessageTypeMapping {
         return clazz != null ? clazz : def();
     }
 
+    public void addClasses(Set<Class<?>> classes) {
+        this.classes.addAll(classes);
+    }
+
+    private String resolvePlaceHolder(String placeHolder) {
+        Assert.notNull(environment, "Environment not be initialized.");
+        return environment.resolveRequiredPlaceholders(placeHolder);
+    }
+
+    private void setStrict(boolean strict) {
+        this.strict = strict;
+    }
+
     private Class<?> def() {
         return defaultMappingClass;
     }
@@ -52,12 +94,14 @@ public class EventMessageTypeMapping {
     @Slf4j
     public static class Builder {
         private List<String> pkgs = new ArrayList<>();
-        private boolean strict = true;
-        private Class<?> def;
-        private ExchangeResolver resolver;
+        private EventMessageTypeMapping mapping;
+
+        public Builder() {
+            this.mapping = new EventMessageTypeMapping();
+        }
 
         public Builder def(Class<?> def) {
-            this.def = def;
+            mapping.setDefaultMappingClass(def);
             return this;
         }
 
@@ -72,39 +116,13 @@ public class EventMessageTypeMapping {
         }
 
         public Builder strict(boolean strict) {
-            this.strict = strict;
-            return this;
-        }
-
-        public Builder resolver(ExchangeResolver resolver) {
-            this.resolver = resolver;
+            mapping.setStrict(strict);
             return this;
         }
 
         public EventMessageTypeMapping build() {
-            EventMessageTypeMapping mapping = new EventMessageTypeMapping();
-
-            if (this.def != null) {
-                mapping.setDefaultMappingClass(def);
-            }
-
-            Set<Class<?>> classes = new HashSet<>();
             for (String pkg : pkgs) {
-                classes.addAll(new EventMessageScanner(pkg).scan());
-            }
-
-            for (Class<?> clazz : classes) {
-                EventMessage annotation = EventMessageUtils.findAnnotation(clazz);
-                if (annotation == null) {
-                    if (strict) {
-                        throw new EventMessageException(String.format("Should add annotation %s to class %s.", EventMessage.class, clazz));
-                    } else {
-                        log.warn("Class {} without annotation {} will be ignored.", clazz, EventMessage.class);
-                    }
-                } else {
-                    String exchange = annotation.exchange();
-                    mapping.addMapping(Objects.isNull(resolver) ? exchange : resolver.resolve(exchange), annotation.code(), clazz);
-                }
+                mapping.addClasses(new EventMessageScanner(pkg).scan());
             }
 
             return mapping;
