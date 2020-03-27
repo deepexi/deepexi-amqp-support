@@ -54,8 +54,23 @@ define event via @EventMessage
 // my.package.FooEvent
 @EventMessage(exchange = "ex", code = "foo")
 public class FooEvent {
-    private String str;
-    private Integer num;
+}
+```
+
+support resolve (exchange & code) that contains placeholder ${}
+
+```yml
+# application.yml
+eg:
+  exchange: DEFAULT-EXCHANGE
+  code: DEFAULT-CODE
+```
+
+```java
+// exchange will be set to DEFAULT-EXCHANGE and code will be DEFAULT-CODE
+@EventMessage(exchange = "${eg.exchange}", code = "${eg.code}")
+public class FooEvent {
+    // ...
 }
 ```
 

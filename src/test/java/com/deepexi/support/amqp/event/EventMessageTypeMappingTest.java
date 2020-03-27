@@ -1,15 +1,28 @@
 package com.deepexi.support.amqp.event;
 
+import com.deepexi.support.amqp.App;
+import com.deepexi.support.amqp.event.asset.Foo4;
 import com.deepexi.support.amqp.event.exception.EventMessageException;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Ignore
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = App.class)
 public class EventMessageTypeMappingTest {
     private EventMessageTypeMapping mapping;
+
+    @Autowired
+    private EventMessageTypeMapping typeMapping;
 
     @Before
     public void setUp() throws Exception {
@@ -41,5 +54,10 @@ public class EventMessageTypeMappingTest {
     public void getMappingOnNull() {
         mapping.setDefaultMappingClass(Map.class);
         assertThat(mapping.getMapping("none", "none")).isEqualTo(Map.class);
+    }
+
+    @Test
+    public void placeHolderResolve() {
+        assertThat(typeMapping.getMapping("default", "foo4")).isEqualTo(Foo4.class);
     }
 }
