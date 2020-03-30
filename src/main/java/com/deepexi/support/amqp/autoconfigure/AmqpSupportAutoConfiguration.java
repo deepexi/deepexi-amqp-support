@@ -13,6 +13,7 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.handler.invocation.InvocableHandlerMethod;
 
@@ -22,6 +23,7 @@ import java.util.List;
  * @author taccisum - liaojinfeng@deepexi.com
  * @since 2020-02-20
  */
+@Configuration
 public class AmqpSupportAutoConfiguration implements BeanFactoryAware {
     private BeanFactory beanFactory;
 
@@ -43,7 +45,7 @@ public class AmqpSupportAutoConfiguration implements BeanFactoryAware {
     @Bean
     public InvocableHandlerMethodDecorator invocableHandlerMethodDecorator0(
             IdempotentValidator idempotentValidator,
-            Authenticator authenticator,
+            Authenticator authenticator0,
             MessageRecorder recorder
     ) {
         return new InvocableHandlerMethodDecorator() {
@@ -58,7 +60,7 @@ public class AmqpSupportAutoConfiguration implements BeanFactoryAware {
                         try {
                             boolean repeated = idempotentValidator.isRepeated(message);
                             if (!repeated) {
-                                authenticator.login(message);
+                                authenticator0.login(message);
                                 result = super.invoke(message, providedArgs);
                             }
                             return result;
@@ -68,7 +70,7 @@ public class AmqpSupportAutoConfiguration implements BeanFactoryAware {
                             throw e;
                         } finally {
                             recorder.record(message, success, result, error);
-                            authenticator.logout(message);
+                            authenticator0.logout(message);
                         }
                     }
                 };
@@ -89,7 +91,7 @@ public class AmqpSupportAutoConfiguration implements BeanFactoryAware {
 
     @Bean
     @ConditionalOnMissingBean
-    public Authenticator authenticator() {
+    public Authenticator authenticator0() {
         return new Authenticator.Dummy();
     }
 

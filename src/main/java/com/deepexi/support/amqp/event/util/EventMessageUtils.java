@@ -12,7 +12,6 @@ import java.util.function.Function;
  * @author taccisum - liaojinfeng@deepexi.com
  * @since 2019-11-25
  */
-@Component
 public class EventMessageUtils implements EnvironmentAware {
 
     private static Environment environment;
