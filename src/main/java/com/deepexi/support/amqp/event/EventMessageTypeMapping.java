@@ -16,7 +16,7 @@ import java.util.*;
  */
 @Slf4j
 public class EventMessageTypeMapping implements EnvironmentAware, InitializingBean {
-    Map<String, Map<String, Class<?>>> code2clazzMapping;
+    Map<String, Map<String, Class<?>>> code2clazzMapping = new HashMap<>();
     private Class<?> defaultMappingClass;
     private Environment environment;
     private Set<Class<?>> classes = new HashSet<>();
@@ -38,13 +38,9 @@ public class EventMessageTypeMapping implements EnvironmentAware, InitializingBe
                     log.warn("Class {} without annotation {} will be ignored.", clazz, EventMessage.class);
                 }
             } else {
-                addMapping(resolvePlaceHolder(annotation.exchange()), resolvePlaceHolder(annotation.code()), clazz);
+                addMapping(resolvePlaceHolder(annotation.exchange()), annotation.code(), clazz);
             }
         }
-    }
-
-    public EventMessageTypeMapping() {
-        code2clazzMapping = new HashMap<>();
     }
 
     public void setDefaultMappingClass(Class<?> defaultMappingClass) {

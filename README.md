@@ -57,7 +57,7 @@ public class FooEvent {
 }
 ```
 
-support resolve (exchange & code) that contains placeholder ${}
+support resolve exchange that contains placeholder ${}
 
 ```yml
 # application.yml
@@ -67,8 +67,8 @@ eg:
 ```
 
 ```java
-// exchange will be set to DEFAULT-EXCHANGE and code will be DEFAULT-CODE
-@EventMessage(exchange = "${eg.exchange}", code = "${eg.code}")
+// exchange will be set to DEFAULT-EXCHANGE
+@EventMessage(exchange = "${eg.exchange}", code = "code")
 public class FooEvent {
     // ...
 }
@@ -80,7 +80,9 @@ send event message
 @Autowired
 private RabbitTemplate rabbitTemplate;
 
-rabbitTemplate.convertAndSend("ex", "routing-key", new FooEvent());
+public void sendMessage(FooEvent event) throws InterruptedException {
+    rabbitTemplate.convertAndSend(EventMessageUtils.getEventExchange(event.getClass()), "routing-key", event);
+}
 ```
 
 receive event message
@@ -89,7 +91,7 @@ receive event message
 @Autowired
 private RabbitTemplate rabbitTemplate;
 
-FooEvent msg = rabbitTemplate.receiveAndConvert("test-queue", new ParameterizedTypeReference<FooEvent>() {
+    FooEvent msg = rabbitTemplate.receiveAndConvert("test-queue", new ParameterizedTypeReference<FooEvent>() {
 }
 ```
 
