@@ -88,7 +88,7 @@ public class AmqpSupportAutoConfiguration implements BeanFactoryAware {
 
     @Bean
     @ConditionalOnMissingBean
-    public Authenticator authenticator() {
+    public Authenticator authenticator0() {
         return new Authenticator.Dummy();
     }
 
