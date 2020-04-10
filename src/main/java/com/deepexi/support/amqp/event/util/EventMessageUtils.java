@@ -33,6 +33,7 @@ public class EventMessageUtils implements EnvironmentAware {
         if (annotation == null) {
             return null;
         }
+
         return func.apply(annotation);
     }
 

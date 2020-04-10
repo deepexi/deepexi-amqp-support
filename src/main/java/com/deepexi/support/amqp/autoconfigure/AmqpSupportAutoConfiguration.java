@@ -14,6 +14,7 @@ import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.handler.invocation.InvocableHandlerMethod;
 
@@ -102,6 +103,7 @@ public class AmqpSupportAutoConfiguration implements BeanFactoryAware {
     }
 
     @Bean
+    @Primary
     public EventMessageUtils eventMessageUtils() {
         return new EventMessageUtils();
     }
