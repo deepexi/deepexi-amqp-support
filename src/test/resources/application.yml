@@ -7,3 +7,7 @@ spring:
 
 test:
   val: default
+
+
+unit-test:
+  exchange: UNIT-TEST-EXCHANGE

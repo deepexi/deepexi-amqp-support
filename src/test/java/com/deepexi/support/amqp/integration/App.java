@@ -2,6 +2,7 @@ package com.deepexi.support.amqp.integration;
 
 import com.deepexi.support.amqp.event.EventMessageClassMapper;
 import com.deepexi.support.amqp.event.EventMessageTypeMapping;
+import com.deepexi.support.amqp.event.util.EventMessageUtils;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -32,5 +33,10 @@ public class App {
         return new EventMessageTypeMapping.Builder()
                 .pkg(this.getClass().getPackage().getName() + ".event")
                 .build();
+    }
+
+    @Bean
+    public EventMessageUtils eventMessageUtils() {
+        return new EventMessageUtils();
     }
 }
