@@ -14,7 +14,7 @@
 
 - provide MessageRecorder
 
-## 1.1.0-SNAPSHOT
+## 1.1.0
 
 ### Features 
 
