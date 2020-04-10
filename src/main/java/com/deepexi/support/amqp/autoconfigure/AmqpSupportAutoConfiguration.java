@@ -1,5 +1,6 @@
 package com.deepexi.support.amqp.autoconfigure;
 
+import com.deepexi.support.amqp.event.util.EventMessageUtils;
 import com.deepexi.support.amqp.listener.decorated.DecoratedMessageHandlerMethodFactory;
 import com.deepexi.support.amqp.listener.decorated.InvocableHandlerMethodDecoration;
 import com.deepexi.support.amqp.listener.decorated.InvocableHandlerMethodDecorator;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.handler.invocation.InvocableHandlerMethod;
 
@@ -98,5 +100,11 @@ public class AmqpSupportAutoConfiguration implements BeanFactoryAware {
     @ConditionalOnMissingBean
     public MessageRecorder messageRecorder() {
         return new MessageRecorder.Dummy();
+    }
+
+    @Bean
+    @Primary
+    public EventMessageUtils eventMessageUtils() {
+        return new EventMessageUtils();
     }
 }
