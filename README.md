@@ -1,4 +1,4 @@
-# DeepEXI AMQP Support
+# DEEPEXI AMQP Support
 
 [CHANGELOG](./CHANGELOG.md)
 

@@ -29,4 +29,9 @@
 - 添加EventMessageUtils解析placeholder的逻辑
 - support resolve @EventMessage(exchange) that contains placeHolder ${}
 
+## 1.1.3
+
+### BugFix
+
+- 修复重复性消费仍然记录record的问题
 
